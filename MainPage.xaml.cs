@@ -30,6 +30,7 @@ namespace TestAliexpressPage
             WebViewBrowser.FrameNavigationStarting += WebViewBrowser_NavigationStarting;
             WebViewBrowser.NavigationCompleted += WebViewBrowser_NavigationCompleted;
             WebViewBrowser.FrameNavigationCompleted += WebViewBrowser_NavigationCompleted;
+            WebViewBrowser.NewWindowRequested += WebViewBrowser_NewWindowRequested; ;
 
             _bookmarks = _localFileConfiguration.Get().Bookmarks;
             foreach (var bookmark in _bookmarks)
@@ -37,7 +38,12 @@ namespace TestAliexpressPage
                 BookmarkMenu.Items.Add(CreateMenuFlyoutItem(bookmark));
             }
         }
-        
+
+        private void WebViewBrowser_NewWindowRequested(WebView sender, WebViewNewWindowRequestedEventArgs args)
+        {
+            sender.Navigate(args.Uri);
+            args.Handled = true;
+        }
 
         private void WebViewBrowser_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {

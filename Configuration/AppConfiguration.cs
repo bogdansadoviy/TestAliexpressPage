@@ -3,11 +3,7 @@ using TestAliexpressPage.Entities;
 
 namespace TestAliexpressPage.Configuration
 {
-    public interface IAppConfiguration
-    {
-        IEnumerable<Bookmark> Bookmarks { get; set; }
-    }
-    public class AppConfiguration : IAppConfiguration
+    public class AppConfiguration
     {
         public AppConfiguration()
         {
