@@ -1,0 +1,94 @@
+﻿<Page
+    x:Class="TestAliexpressPage.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:TestAliexpressPage"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Button
+                Width="30"
+                Height="30"
+                Background="White"
+                Click="Navigation_Back_Button_Click"
+                ToolTipService.ToolTip="Back">
+                <Image
+                    Width="30"
+                    Height="30"
+                    Margin="-20"
+                    Source="/Assets/back.png" />
+            </Button>
+
+            <Button
+                Width="30"
+                Height="30"
+                Background="White"
+                Click="Navigation_Forward_Button_Click"
+                ToolTipService.ToolTip="Forward">
+                <Image
+                    Width="30"
+                    Height="30"
+                    Margin="-20"
+                    Source="/Assets/next.png" />
+            </Button>
+
+            <Button
+                Width="30"
+                Height="30"
+                Background="White"
+                Click="Refresh_Page_Button_Click"
+                ToolTipService.ToolTip="Refresh">
+                <Image
+                    Width="30"
+                    Height="30"
+                    Margin="-20"
+                    Source="/Assets/refresh.png" />
+            </Button>
+
+            <Button
+                x:Name="AddBookmarkButton"
+                Width="30"
+                Height="30"
+                Background="White">
+                <FontIcon
+                    x:Name="AddBookmarkFontIcon"
+                    Width="30"
+                    Height="30"
+                    Margin="-20" />
+            </Button>
+
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal">
+            <muxc:MenuBar
+                x:Name="tabs_menu"
+                Margin="-10,-10,0,-10"
+                HorizontalAlignment="Right">
+                <muxc:MenuBarItem x:Name="BookmarkMenu" Title="Bookmarks" />
+            </muxc:MenuBar>
+        </StackPanel>
+
+        <WebView
+            x:Name="WebViewBrowser"
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Source="https://alitems.com/g/1e8d1144949e28f4bddd16525dc3e8/?subid=mcstorewindows/web-view" />
+    </Grid>
+</Page>

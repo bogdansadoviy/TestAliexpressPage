@@ -1,0 +1,32 @@
+﻿<ContentDialog
+    x:Class="TestAliexpressPage.Views.Dialogs.NewBookmarkDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:TestAliexpressPage.Views.Dialogs"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="New bookmark"
+    PrimaryButtonClick="SaveButtonClick"
+    PrimaryButtonText="Save"
+    SecondaryButtonClick="CancelButtonClick"
+    SecondaryButtonText="Cancel"
+    mc:Ignorable="d">
+
+    <StackPanel>
+        <TextBlock>
+            Name
+        </TextBlock>
+        <TextBox
+            x:Name="BookmarkName"
+            MaxLength="100"
+            TextWrapping="Wrap" />
+
+        <TextBlock>
+            Url
+        </TextBlock>
+        <TextBox
+            x:Name="BookmarkUrl"
+            IsEnabled="False"
+            TextWrapping="Wrap" />
+    </StackPanel>
+</ContentDialog>
