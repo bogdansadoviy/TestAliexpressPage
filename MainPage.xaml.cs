@@ -20,12 +20,14 @@ namespace TestAliexpressPage
         private readonly LocalFileConfiguration<AppConfiguration> _localFileConfiguration =
             new LocalFileConfiguration<AppConfiguration>();
 
+        private readonly string[] _ignorableHosts = new string[] { "play.google.com", "itunes.apple.com" };
+
         private IEnumerable<Bookmark> _bookmarks;
 
         public MainPage()
         {
             this.InitializeComponent();
-            
+
             WebViewBrowser.NavigationStarting += WebViewBrowser_NavigationStarting;
             WebViewBrowser.FrameNavigationStarting += WebViewBrowser_NavigationStarting;
             WebViewBrowser.NavigationCompleted += WebViewBrowser_NavigationCompleted;
@@ -41,7 +43,10 @@ namespace TestAliexpressPage
 
         private void WebViewBrowser_NewWindowRequested(WebView sender, WebViewNewWindowRequestedEventArgs args)
         {
-            sender.Navigate(args.Uri);
+            if (!_ignorableHosts.Contains(args.Uri.Host))
+            {
+                sender.Navigate(args.Uri);
+            }
             args.Handled = true;
         }
 
@@ -212,5 +217,5 @@ namespace TestAliexpressPage
             }
         }
     }
-    
+
 }
