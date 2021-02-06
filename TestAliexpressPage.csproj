@@ -137,6 +137,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BookmarkService.cs" />
     <Compile Include="Views\Dialogs\NewBookmarkDialog.xaml.cs">
       <DependentUpon>NewBookmarkDialog.xaml</DependentUpon>
     </Compile>

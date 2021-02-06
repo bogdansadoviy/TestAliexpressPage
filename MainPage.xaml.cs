@@ -1,9 +1,8 @@
 ﻿using Prism.Commands;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using TestAliexpressPage.Configuration;
 using TestAliexpressPage.Entities;
+using TestAliexpressPage.Services;
 using TestAliexpressPage.Views.Dialogs;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -17,26 +16,19 @@ namespace TestAliexpressPage
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private readonly LocalFileConfiguration<AppConfiguration> _localFileConfiguration =
-            new LocalFileConfiguration<AppConfiguration>();
+        private readonly BookmarkService _bookmarkService = new BookmarkService();
 
         private readonly string[] _ignorableHosts = new string[] { "play.google.com", "itunes.apple.com" };
         private readonly string[] _ignorableLocalPathes = new string[] { "/download_app_guide.htm" };
-
-        private IEnumerable<Bookmark> _bookmarks;
 
         public MainPage()
         {
             this.InitializeComponent();
 
             WebViewBrowser.NavigationStarting += WebViewBrowser_NavigationStarting;
-            WebViewBrowser.FrameNavigationStarting += WebViewBrowser_NavigationStarting;
-            WebViewBrowser.NavigationCompleted += WebViewBrowser_NavigationCompleted;
-            WebViewBrowser.FrameNavigationCompleted += WebViewBrowser_NavigationCompleted;
             WebViewBrowser.NewWindowRequested += WebViewBrowser_NewWindowRequested; ;
 
-            _bookmarks = _localFileConfiguration.Get().Bookmarks;
-            foreach (var bookmark in _bookmarks)
+            foreach (var bookmark in _bookmarkService.Bookmarks)
             {
                 BookmarkMenu.Items.Add(CreateMenuFlyoutItem(bookmark));
             }
@@ -59,25 +51,7 @@ namespace TestAliexpressPage
                 return;
             }
 
-            if (_bookmarks.Any(_ => _.Url == sender.Source.ToString()))
-            {
-                AddBookmarkFontIcon.Glyph = "\uE735";
-                AddBookmarkButton.Click -= Add_Bookmark_Button_Click;
-                AddBookmarkButton.Click -= Remove_Bookmark_Button_Click;
-                AddBookmarkButton.Click += Remove_Bookmark_Button_Click;
-            }
-            else
-            {
-                AddBookmarkFontIcon.Glyph = "\uE734";
-                AddBookmarkButton.Click -= Remove_Bookmark_Button_Click;
-                AddBookmarkButton.Click -= Add_Bookmark_Button_Click;
-                AddBookmarkButton.Click += Add_Bookmark_Button_Click;
-            }
-        }
-
-        private void WebViewBrowser_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
-        {
-            if (_bookmarks.Any(_ => _.Url == sender.Source.ToString()))
+            if (_bookmarkService.GetBookmarkByUri(args.Uri) != null)
             {
                 AddBookmarkFontIcon.Glyph = "\uE735";
                 AddBookmarkButton.Click -= Add_Bookmark_Button_Click;
@@ -152,41 +126,14 @@ namespace TestAliexpressPage
 
         private void UpdateBookmark(Bookmark newBookmark)
         {
-            var currentMaxIndex = 0;
-            if (_bookmarks.Any())
-            {
-                currentMaxIndex = _bookmarks.Max(_ => _.Id);
-            }
-
-            newBookmark.Id = currentMaxIndex + 1;
-
-            var newBookmarks = new List<Bookmark>(_bookmarks)
-            {
-                newBookmark
-            };
-
-            _bookmarks = newBookmarks;
+            _bookmarkService.AddBookmark(newBookmark);
             BookmarkMenu.Items.Add(CreateMenuFlyoutItem(newBookmark));
-            _localFileConfiguration.Save(new AppConfiguration()
-            {
-                Bookmarks = newBookmarks
-            });
         }
 
         private void RemoveBookmark(string bookmarkUrl)
         {
-            var bookmark = _bookmarks.First(_ => _.Url == bookmarkUrl);
-            var index = _bookmarks.ToList().IndexOf(bookmark);
-
-            var newBookmarks = new List<Bookmark>(_bookmarks);
-            newBookmarks.Remove(bookmark);
-
-            _bookmarks = newBookmarks;
-            BookmarkMenu.Items.RemoveAt(index);
-            _localFileConfiguration.Save(new AppConfiguration()
-            {
-                Bookmarks = newBookmarks
-            });
+            var removedBookmarkIndex = _bookmarkService.RemoveBookmark(bookmarkUrl);
+            BookmarkMenu.Items.RemoveAt(removedBookmarkIndex);
         }
 
         private MenuFlyoutItem CreateMenuFlyoutItem(Bookmark bookmark)
@@ -216,7 +163,7 @@ namespace TestAliexpressPage
                   (_bookmarkClickCommand = new DelegateCommand<string>(
                       obj => {
                           var bookmarkId = int.Parse(obj);
-                          var bookmark = _bookmarks.First(_ => _.Id == bookmarkId);
+                          var bookmark = _bookmarkService.GetBookmarkById(bookmarkId);
 
                           WebViewBrowser.Navigate(new Uri(bookmark.Url));
                       }
