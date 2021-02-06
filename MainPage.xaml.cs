@@ -21,6 +21,7 @@ namespace TestAliexpressPage
             new LocalFileConfiguration<AppConfiguration>();
 
         private readonly string[] _ignorableHosts = new string[] { "play.google.com", "itunes.apple.com" };
+        private readonly string[] _ignorableLocalPathes = new string[] { "/download_app_guide.htm" };
 
         private IEnumerable<Bookmark> _bookmarks;
 
@@ -52,6 +53,12 @@ namespace TestAliexpressPage
 
         private void WebViewBrowser_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
+            if (_ignorableLocalPathes.Contains(args.Uri.LocalPath))
+            {
+                args.Cancel = true;
+                return;
+            }
+
             if (_bookmarks.Any(_ => _.Url == sender.Source.ToString()))
             {
                 AddBookmarkFontIcon.Glyph = "\uE735";
